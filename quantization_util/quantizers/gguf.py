@@ -1,5 +1,6 @@
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 from typing import Literal
 
@@ -75,7 +76,7 @@ class GGUFQuantizer(BaseQuantizer):
                 "Clone llama.cpp and pass its path as llama_cpp_path."
             )
         subprocess.run(
-            ["python", str(convert_script), str(hf_dir), "--outfile", str(out_file), "--outtype", "f16"],
+            [sys.executable, str(convert_script), str(hf_dir), "--outfile", str(out_file), "--outtype", "f16"],
             check=True,
         )
 

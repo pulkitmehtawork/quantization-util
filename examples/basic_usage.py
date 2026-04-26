@@ -8,7 +8,7 @@ Models used here are tiny and can run on a MacBook Pro.
 from quantization_util import Quantizer
 from quantization_util.utils import get_model_size_mb, benchmark_inference
 
-MODEL = "facebook/opt-125m"  # ~250 MB, loads fine on CPU
+MODEL = "HuggingFaceTB/SmolLM2-135M"  # ~250 MB, loads fine on CPU
 
 
 def example_bitsandbytes():

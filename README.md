@@ -4,7 +4,7 @@ A Python package to quantize small HuggingFace models to multiple formats — re
 
 ```bash
 pip install quantization-util
-quantize --model facebook/opt-125m --method gguf --quant-type Q4_K_M --output ./out
+quantize --model HuggingFaceTB/SmolLM2-135M --method gguf --quant-type Q4_K_M --output ./out
 ```
 
 ---
@@ -20,7 +20,7 @@ quantize --model facebook/opt-125m --method gguf --quant-type Q4_K_M --output ./
 ```python
 from quantization_util import Quantizer
 
-q = Quantizer("facebook/opt-125m")
+q = Quantizer("HuggingFaceTB/SmolLM2-135M")
 q.quantize("bitsandbytes", output_dir="./out", bits=4, bnb_4bit_quant_type="nf4")
 ```
 
@@ -41,13 +41,13 @@ q.quantize("bitsandbytes", output_dir="./out", bits=4, bnb_4bit_quant_type="nf4"
 | F16     | 100%        | Lossless        | Just format conversion |
 
 ```python
-q = Quantizer("facebook/opt-125m")
+q = Quantizer("HuggingFaceTB/SmolLM2-135M")
 q.quantize("gguf", output_dir="./out", quantization_type="Q4_K_M",
            llama_cpp_path="/path/to/llama.cpp")
 ```
 
 ```bash
-quantize --model facebook/opt-125m --method gguf --quant-type Q4_K_M \
+quantize --model HuggingFaceTB/SmolLM2-135M --method gguf --quant-type Q4_K_M \
          --llama-cpp-path /path/to/llama.cpp --output ./out
 ```
 
@@ -62,12 +62,12 @@ Requires: llama.cpp cloned and built (`cmake -B build && cmake --build build -j`
 **What it's useful for.** High-accuracy 4-bit weight quantization — often within 1–2% of the original model on benchmarks. The calibration step takes minutes, not hours. Widely supported on HuggingFace Hub (many community-uploaded GPTQ models). Use this when you need a quantized model that behaves as close as possible to the original, and you can tolerate a one-time offline calibration pass.
 
 ```python
-q = Quantizer("facebook/opt-125m")
+q = Quantizer("HuggingFaceTB/SmolLM2-135M")
 q.quantize("gptq", output_dir="./out", bits=4, group_size=128, dataset="wikitext2")
 ```
 
 ```bash
-quantize --model facebook/opt-125m --method gptq --bits 4 --group-size 128 --output ./out
+quantize --model HuggingFaceTB/SmolLM2-135M --method gptq --bits 4 --group-size 128 --output ./out
 ```
 
 Requires: `pip install quantization-util[gptq]`
@@ -81,12 +81,12 @@ Requires: `pip install quantization-util[gptq]`
 **What it's useful for.** State-of-the-art 4-bit accuracy, often beating GPTQ at the same bit width. The quantized model can be served with fast GPU kernels (GEMM/GEMV). Good default choice for deployment when you want the best quality at 4-bit with a fast quantization pipeline.
 
 ```python
-q = Quantizer("facebook/opt-125m")
+q = Quantizer("HuggingFaceTB/SmolLM2-135M")
 q.quantize("awq", output_dir="./out", bits=4, group_size=128)
 ```
 
 ```bash
-quantize --model facebook/opt-125m --method awq --bits 4 --output ./out
+quantize --model HuggingFaceTB/SmolLM2-135M --method awq --bits 4 --output ./out
 ```
 
 Requires: `pip install quantization-util[awq]`
@@ -100,13 +100,13 @@ Requires: `pip install quantization-util[awq]`
 **What it's useful for.** Zero-dependency quantization — works on any CPU without installing external packages. The simplest path if you just want to reduce model size slightly and maintain full portability. Particularly effective for encoder models and smaller architectures where dynamic range per-tensor is stable. Less effective than GPTQ/AWQ for decoder-only LLMs at 4-bit, but perfectly fine for int8.
 
 ```python
-q = Quantizer("facebook/opt-125m")
+q = Quantizer("HuggingFaceTB/SmolLM2-135M")
 q.quantize("pytorch", output_dir="./out", mode="dynamic")      # int8 linear layers
 q.quantize("pytorch", output_dir="./out", mode="weight_only")  # torchao int8 weight-only
 ```
 
 ```bash
-quantize --model facebook/opt-125m --method pytorch --mode dynamic --output ./out
+quantize --model HuggingFaceTB/SmolLM2-135M --method pytorch --mode dynamic --output ./out
 ```
 
 ---
@@ -117,7 +117,7 @@ quantize --model facebook/opt-125m --method pytorch --mode dynamic --output ./ou
 from quantization_util import Quantizer
 from quantization_util.utils import get_model_size_mb, benchmark_inference
 
-q = Quantizer("facebook/opt-125m")
+q = Quantizer("HuggingFaceTB/SmolLM2-135M")
 
 # Single method
 q.quantize("bitsandbytes", output_dir="./out", bits=4)
@@ -137,8 +137,8 @@ results = q.quantize_all(
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from quantization_util.utils import benchmark_inference, get_model_size_mb
 
-model = AutoModelForCausalLM.from_pretrained("facebook/opt-125m")
-tokenizer = AutoTokenizer.from_pretrained("facebook/opt-125m")
+model = AutoModelForCausalLM.from_pretrained("HuggingFaceTB/SmolLM2-135M")
+tokenizer = AutoTokenizer.from_pretrained("HuggingFaceTB/SmolLM2-135M")
 
 stats = benchmark_inference(model, tokenizer, max_new_tokens=50)
 print(stats)
@@ -210,8 +210,8 @@ quantize --model <hf-model-id-or-path>
 
 | Model | Params | fp16 size | Loads on |
 |-------|--------|-----------|----------|
-| facebook/opt-125m | 125M | ~250 MB | Any Mac |
-| facebook/opt-350m | 350M | ~700 MB | Any Mac |
+| HuggingFaceTB/SmolLM2-135M | 135M | ~270 MB | Any Mac |
+| HuggingFaceTB/SmolLM2-360M | 360M | ~720 MB | Any Mac |
 | Qwen/Qwen2.5-0.5B | 500M | ~1 GB | Any Mac |
 | google/gemma-2-2b | 2B | ~4 GB | 8 GB RAM |
 | meta-llama/Llama-3.2-3B | 3B | ~6 GB | 8 GB RAM |
