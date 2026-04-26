@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "quantization-util"
+version = "0.1.0"
+description = "Quantize small HuggingFace models to multiple formats (GGUF, GPTQ, AWQ, BitsAndBytes, PyTorch)"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "Pulkit Mehta", email = "pulkitmehtawork1985@gmail.com" }]
+requires-python = ">=3.10"
+keywords = ["quantization", "llm", "gguf", "gptq", "awq", "bitsandbytes", "pytorch", "transformers"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+# Minimal hard deps — backends are optional extras
+dependencies = [
+    "transformers>=4.40",
+    "torch>=2.2",
+    "huggingface-hub>=0.22",
+    "safetensors>=0.4",
+]
+
+[project.optional-dependencies]
+bnb = ["bitsandbytes>=0.43"]
+gptq = ["auto-gptq>=0.7", "datasets>=2.18"]
+awq = ["autoawq>=0.2", "datasets>=2.18"]
+torchao = ["torchao>=0.2"]
+all = [
+    "bitsandbytes>=0.43",
+    "auto-gptq>=0.7",
+    "autoawq>=0.2",
+    "datasets>=2.18",
+    "torchao>=0.2",
+]
+dev = [
+    "pytest>=8",
+    "pytest-mock>=3.14",
+    "ruff>=0.4",
+]
+
+[project.scripts]
+quantize = "quantization_util.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/pulkitmehtawork/quantization-util"
+Repository = "https://github.com/pulkitmehtawork/quantization-util"
+Issues = "https://github.com/pulkitmehtawork/quantization-util/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["quantization_util*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
